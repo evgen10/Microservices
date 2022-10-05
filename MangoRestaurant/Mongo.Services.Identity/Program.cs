@@ -1,3 +1,5 @@
+using Duende.IdentityServer.AspNetIdentity;
+using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -5,6 +7,7 @@ using Mongo.Services.Identity;
 using Mongo.Services.Identity.DbContexts;
 using Mongo.Services.Identity.Initializer;
 using Mongo.Services.Identity.Models;
+using Mongo.Services.Identity.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +37,7 @@ identityServerBuilder.AddDeveloperSigningCredential();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 var app = builder.Build();
 
