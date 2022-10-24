@@ -17,6 +17,15 @@ namespace Mango.Services.ShoppingCartAPI.Repository
             _mapper = mapper;
         }
 
+        public async Task<bool> ApplyCouponAsync(string userId, string code)
+        {
+            var cartHeader = await _dbContext.CartHeader.FirstOrDefaultAsync(c => c.UserId == userId);
+            cartHeader.CouponCode = code;
+            _dbContext.CartHeader.Update(cartHeader);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> ClearCartAsync(string userId)
         {
             var cartHeaderFromDb = await _dbContext.CartHeader
@@ -103,6 +112,15 @@ namespace Mango.Services.ShoppingCartAPI.Repository
                 .Where(cd => cd.CartHeaderId == cart.CartHeader.CartHeaderId).Include(x => x.Product);
 
             return _mapper.Map<CartDto>(cart); 
+        }
+
+        public async Task<bool> RemoveCouponAsync(string userId)
+        {
+            var cartHeader = await _dbContext.CartHeader.FirstOrDefaultAsync(c => c.UserId == userId);
+            cartHeader.CouponCode = string.Empty;
+            _dbContext.CartHeader.Update(cartHeader);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> RemoveFromCartAsync(int cartDetailsId)

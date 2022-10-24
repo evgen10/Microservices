@@ -12,6 +12,5 @@ namespace Mango.Services.ShoppingCartAPI.DbContexts
         public DbSet<CartDetails> CartDetails { get; set; }
 
         public DbSet<CartHeader> CartHeader { get; set; }
-
     }
 }

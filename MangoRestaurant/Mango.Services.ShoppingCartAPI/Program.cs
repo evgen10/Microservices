@@ -1,4 +1,5 @@
 using AutoMapper;
+using Mango.MessageBus;
 using Mango.Services.ShoppingCartAPI.Configurations;
 using Mango.Services.ShoppingCartAPI.DbContexts;
 using Mango.Services.ShoppingCartAPI.Repository;
@@ -66,10 +67,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+
+builder.Services.Configure<ServiceBusConfig>(
+    builder.Configuration.GetSection("ServiceBusSetting"));
+
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddHttpClient<ICouponRepository, CouponRepository>(x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
+builder.Services.AddAzureMessageBus();
 
 var app = builder.Build();
 
